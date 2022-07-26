@@ -35,13 +35,15 @@ RunObjectPostCreateHook(Oid classId, Oid objectId, int subId,
 {
 	ObjectAccessPostCreate pc_arg;
 
+	/* increment counter so that object appears in table */
+	CommandCounterIncrement();
+
 	/* caller should check, but just in case... */
 	Assert(object_access_hook != NULL);
 
 	memset(&pc_arg, 0, sizeof(ObjectAccessPostCreate));
 	pc_arg.is_internal = is_internal;
 
-	CommandCounterIncrement();
 	(*object_access_hook) (OAT_POST_CREATE,
 						   classId, objectId, subId,
 						   (void *) &pc_arg);
